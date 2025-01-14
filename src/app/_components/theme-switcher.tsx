@@ -47,49 +47,48 @@ export const NoFOUCScript = (storageKey: string) => {
     document.documentElement.setAttribute("data-mode", mode);
     restoreTransitions();
   };
-  window.updateDOM();
-  media.addEventListener("change", window.updateDOM);
 };
-
-let updateDOM: () => void;
 
 /**
  * Switch button to quickly toggle user preference.
  */
 const Switch = () => {
-  const [mode, setMode] = useState<ColorSchemePreference>(
-    () =>
-      ((typeof localStorage !== "undefined" &&
-        localStorage.getItem(STORAGE_KEY)) ??
-        "system") as ColorSchemePreference,
-  );
+  const [mounted, setMounted] = useState(false);
+  const [mode, setMode] = useState<ColorSchemePreference>("system");
 
   useEffect(() => {
-    // store global functions to local variables to avoid any interference
-    updateDOM = window.updateDOM;
-    /** Sync the tabs */
-    addEventListener("storage", (e: StorageEvent): void => {
-      e.key === STORAGE_KEY && setMode(e.newValue as ColorSchemePreference);
-    });
+    const savedMode = localStorage.getItem(STORAGE_KEY) as ColorSchemePreference ?? "system";
+    setMode(savedMode);
+    setMounted(true);
+    window.updateDOM = window.updateDOM || (() => {});
+    window.updateDOM();
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, mode);
-    updateDOM();
-  }, [mode]);
+    if (mounted) {
+      localStorage.setItem(STORAGE_KEY, mode);
+      window.updateDOM();
+    }
+  }, [mode, mounted]);
+
+  useEffect(() => {
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY) {
+        setMode(e.newValue as ColorSchemePreference);
+      }
+    };
+    addEventListener("storage", handleStorage);
+    return () => removeEventListener("storage", handleStorage);
+  }, []);
+
+  if (!mounted) return null;
 
   /** toggle mode */
   const handleModeSwitch = () => {
     const index = modes.indexOf(mode);
     setMode(modes[(index + 1) % modes.length]);
   };
-  return (
-    <button
-      suppressHydrationWarning
-      className={styles.switch}
-      onClick={handleModeSwitch}
-    />
-  );
+  return <button suppressHydrationWarning className={styles.switch} onClick={handleModeSwitch} />;
 };
 
 const Script = memo(() => (
