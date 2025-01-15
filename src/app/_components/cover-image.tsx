@@ -9,7 +9,7 @@ type Props = {
   priority?: boolean;
 };
 
-const CoverImage = ({ title, src, slug, priority = false }: Props) => {
+const CoverImage = ({ title, src, slug }: Props) => {
   const image = (
     <Image
       src={src}
@@ -19,7 +19,7 @@ const CoverImage = ({ title, src, slug, priority = false }: Props) => {
       })}
       width={1300}
       height={630}
-      priority={priority}
+      priority={true}
     />
   );
   return (
