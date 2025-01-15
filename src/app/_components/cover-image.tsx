@@ -17,9 +17,10 @@ const CoverImage = ({ title, src, slug, priority = false }: Props) => {
       className={cn("shadow-sm w-full", {
         "hover:shadow-lg transition-shadow duration-200": slug,
       })}
-      priority={priority}
       width={1300}
       height={630}
+      priority={priority}
+      loading={priority ? "eager" : "lazy"}
     />
   );
   return (
