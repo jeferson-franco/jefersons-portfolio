@@ -6,9 +6,10 @@ type Props = {
   title: string;
   src: string;
   slug?: string;
+  priority: boolean;
 };
 
-const CoverImage = ({ title, src, slug }: Props) => {
+const CoverImage = ({ title, src, slug, priority = false }: Props) => {
   const image = (
     <Image
       src={src}
@@ -16,7 +17,7 @@ const CoverImage = ({ title, src, slug }: Props) => {
       className={cn("shadow-sm w-full", {
         "hover:shadow-lg transition-shadow duration-200": slug,
       })}
-      priority={true}
+      priority={priority}
       width={1300}
       height={630}
     />
