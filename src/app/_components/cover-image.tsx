@@ -6,7 +6,7 @@ type Props = {
   title: string;
   src: string;
   slug?: string;
-  priority: boolean;
+  priority?: boolean;
 };
 
 const CoverImage = ({ title, src, slug, priority = false }: Props) => {
@@ -20,7 +20,6 @@ const CoverImage = ({ title, src, slug, priority = false }: Props) => {
       width={1300}
       height={630}
       priority={priority}
-      loading={priority ? "eager" : "lazy"}
     />
   );
   return (
